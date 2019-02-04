@@ -31,8 +31,16 @@
             style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
             center: [2.1633334041016496, 41.53557636530371],
             zoom: 9.427714399493075,
+            scrollZoom: false,
+        });
 
+        const nav = new mapboxgl.NavigationControl({
+            showCompass: false
+        });
+        map.addControl(nav, 'top-left');
 
+        carto.setDefaultConfig({
+            serverURL: 'https://{user}.carto.com'
         });
 
         carto.setDefaultConfig({
