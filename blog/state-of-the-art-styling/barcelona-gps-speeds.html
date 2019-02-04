@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add layer | CARTO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        html,
+        body {
+            margin: 0;
+        }
+
+        #map {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script>
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+            center: [2.1633334041016496, 41.53557636530371],
+            zoom: 9.427714399493075,
+
+
+        });
+
+        carto.setDefaultConfig({
+            serverURL: 'https://{user}.carto.com'
+        });
+
+        carto.setDefaultAuth({
+            username: 'cdbsol-admin',
+            apiKey: 'default_public'
+        });
+
+
+        const source = new carto.source.SQL(`select *, 1 as co from gecat_geodata_copy`);
+        const viz = new carto.Viz(`color: ramp(linear(@b,0,1), [#333,@h,#222])
+                @h: ramp(linear(log(clusterAvg($speed)), 0, 4), reverse(cb_greys))
+                @b: (now()*12*@s2+@s)%1
+                @s: clusterAvg($speed)
+                @s2: (@s/120)^2
+
+                width: ramp(linear(log(clusterAvg($speed)), 0, 4), [0.5,1.2])
+                strokeWidth: 0 
+                resolution: 1`);
+        const layer = new carto.Layer('layer', source, viz);
+
+        layer.addTo(map);
+    </script>
+</body>
+
+</html>
