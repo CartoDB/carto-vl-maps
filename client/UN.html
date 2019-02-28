@@ -192,10 +192,10 @@
     <aside class="toolbox">
         <div class="box">
             <header>
-                <h1>Animation controls</h1>
+                <h1>Events</h1>
             </header>
             <section>
-                <p class="description open-sans">Control animations by issuing "play", "pause" and "set" commands</p>
+                <p class="description open-sans">Animation of events</p>
             </section>
             <section style="margin-top: 15px;">
                 <input type="button" id="js-play-button">
@@ -252,7 +252,8 @@
             //filter: @animation
             width: $fatalities
             color: ramp($event_type,prism)*@animation
-            strokeWidth: 0
+            strokeWidth: 0.5
+            strokeColor: black
         `);
 
         // Define map layer
