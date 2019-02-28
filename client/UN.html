@@ -275,7 +275,7 @@
 
         // Listen to interaction events
         $durationRange.addEventListener('change', () => {
-            const duration = parseInt($durationRange.value, 10);
+            const duration = parseInt($durationRange.value, 30);
             // Update animation duration
             viz.variables.duration = $spanDuration.innerHTML = duration;
         });
