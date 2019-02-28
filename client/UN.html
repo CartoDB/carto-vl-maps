@@ -249,10 +249,10 @@
         const viz = new carto.Viz(`
             @duration: 30
             @animation: animation(linear($event_date), @duration, fade(0.5, 0.5))
-            //filter: @animation
+            filter: @animation
             width: $fatalities
-            color: ramp($event_type,prism)*@animation
-            strokeWidth: 0.5
+            color: ramp($event_type,prism)
+            strokeWidth: 0
             strokeColor: black
         `);
 
