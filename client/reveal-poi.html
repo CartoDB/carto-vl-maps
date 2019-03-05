@@ -36,7 +36,7 @@
             container: 'map',
             style: carto.basemaps.voyager,
             center: [-3.7010629579257284, 40.45734742133632],
-            zoom: 14,
+            zoom: 15,
             scrollZoom: false,
         });
 
@@ -47,20 +47,38 @@
 
         // Define user
         carto.setDefaultAuth({
-            username: 'reveal-vodafone-admin',
-            apiKey: '50f8b7b13316ec642b5cad86de33fd165bb70dd5'
+            username: 'solutions-data-prod',
+            apiKey: 'PgKzKGdBwX1y1EI9GEFvcA'
         });
 
         // Define layer
-        const source = new carto.source.SQL(`SELECT * from sites`);
+        const source = new carto.source.SQL(`
+        SELECT 
+            p.cartodb_id, p.the_geom_webmercator, p.category 
+            FROM pois p 
+            WHERE ST_Intersects(p.the_geom_webmercator, '0106000020110F000001000000010300000001000000320000002BF55A96393119C176AB22A9FDD05241D9C8BF847A3019C19780D0F003D152417E9C77102E3019C1A69BF0C616D152417E9C77102E3019C158AADFE32FD1524123702F9CE12F19C19FD915BA42D152418866F63EE52C19C16056C48381D15241433ACC614C2C19C1F52F8C30A7D15241A3E15910672B19C1B3B26677ADD1524187F0D8D50A2319C1B3B26677ADD15241E6976684252219C1F52F8C30A7D15241A16B3CA78C2119C1529AEAA19AD152415C3F12CAF32019C1529AEAA19AD15241A6E681E15A2019C1F52F8C30A7D1524161BA5704C21F19C1F52F8C30A7D15241DBDC48845E1D19C1EA5E2FF574D15241F1DC661B121D19C160F3DF1E62D15241F1DC661B121D19C1A69BF0C616D1524196B01EA7C51C19C19780D0F003D1524155FF3904FB1A19C1B2966562F7D052416BFF579BAE1A19C1C240558CE4D0524155FF3904FB1A19C11D614EB6D1D0524196B01EA7C51C19C1FD48F427C5D05241D661034A901E19C18B890F7C9FD052411B8E2D27291F19C18B890F7C9FD0524161BA5704C21F19C173045D0AACD05241A6E681E15A2019C173045D0AACD052415C3F12CAF32019C18B890F7C9FD05241FC97841BD92119C14F87723499D0524187F0D8D50A2319C14F87723499D0524127494B27F02319C1E442C6ED92D052416C757504892419C17D30815F86D052410CCEE7556E2519C1CE62E81780D0524197263C10A02619C1CE62E81780D05241377FAE61852719C157A250D079D05241377FAE61852719C1AFF813426DD05241F2528484EC2619C13783DBB360D05241F2528484EC2619C1EA41A72554D052417DABD83E1E2819C15BAD5B083BD052411D044B90032919C1AC2BBFC134D05241BD5CBDE1E82919C15BAD5B083BD05241433ACC614C2C19C1AFF813426DD052418866F63EE52C19C1CE62E81780D0524128BF6890CA2D19C1E442C6ED92D0524124442356FC2E19C14F87723499D0524123702F9CE12F19C18B890F7C9FD05241D9C8BF847A3019C1FD48F427C5D05241A84D3E1C453219C1662E0FD3EAD05241277A155C6B3219C1B2966562F7D05241BE4D5CB3F83119C176AB22A9FDD052412BF55A96393119C176AB22A9FDD05241'::GEOMETRY) and p.category not in ('Other','Others')
+        `);
         const viz = new carto.Viz(`
-     
-            @sites: ["orange", "movistar", "vodafone", "yoigo", "thephonehouse"]
-            @symbol: image('../styling/competitor.svg') 
-            //@symbols: 
-            width: 19
-            symbol: @symbol
-            filter: $category nin ["place","address"]
+        @type_reveal: ["Sustenance","Commercial","Healthcare","Entertainment, Arts & Culture","Transportation","Civic amenities","Education","Tourism","Financial"]
+
+        @symbols:[image('../styling/sustenance.svg'),
+        image('../styling/commercial.svg'),
+        image('../styling/healthcare.svg'),
+        image('../styling/entertainment.svg'),
+        image('../styling/transportation.svg'),
+        image('../styling/civic.svg'),
+        image('../styling/education.svg'),
+        image('../styling/tourism.svg'),
+        image('../styling/financial.svg')]
+
+        @cc: clusterCount()
+        width: 15
+            //width: sqrt(@cc)
+            //symbol: ramp(buckets($category,@type_reveal),@symbols)
+           symbol: ramp(buckets(clusterMODE($category),@type_reveal),@symbols)
+            //color:  ramp(clusterMODE($category),prism)
+            //filter: $category nin ["Other","Others"]
+            resolution: 8
         `);
         const layer = new carto.Layer('layer', source, viz);
 
