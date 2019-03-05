@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="21px" viewBox="0 0 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>Elements / Map / Marker / Pois / Civic amenities</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Elements-/-Map-/-Marker-/-Pois-/-Civic-amenities" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="#FFFFFF" cx="10.5" cy="10.5" r="10.5"></circle>
+        <path d="M10.5,20 C15.7467051,20 20,15.7467051 20,10.5 C20,5.25329488 15.7467051,1 10.5,1 C5.25329488,1 1,5.25329488 1,10.5 C1,15.7467051 5.25329488,20 10.5,20 Z M10.5,21 C4.70101013,21 0,16.2989899 0,10.5 C0,4.70101013 4.70101013,0 10.5,0 C16.2989899,0 21,4.70101013 21,10.5 C21,16.2989899 16.2989899,21 10.5,21 Z M6.5,3 L7,3 L6.75,7 L7.5,7.5 L7.75,3 L8.25,3 L8.5,7.5 L9.25,7 L9,3 L9.5,3 L10.5,8.5 C10.4834,9.3192 8.7186,9.6824 8.75,10.5 L9,17 C9.0384,17.9993 8,18 8,18 C8,18 6.9616,17.9993 7,17 L7.25,10.5 C7.2815,9.681 5.3536,9.305 5.5,8.5 L6.5,3 Z M15,3 L15,17 C15,18 14,18 14,18 C14,18 12.9095,17.9959 13,17 L13.5,11.5 C13.0909,11.5 12,11.3182 12,10.5 L12,8 C12,7.0182 12.1358,5.3731 12.5449,4.6367 C13.0358,3.6549 14.2636,3 15,3 Z" id="Combined-Shape" fill="#747474" fill-rule="nonzero"></path>
+    </g>
+</svg>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="21px" viewBox="0 0 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>Elements / Map / Marker / Pois / Competitor</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M10.5,21 C4.70101013,21 0,16.2989899 0,10.5 C0,4.70101013 4.70101013,0 10.5,0 C16.2989899,0 21,4.70101013 21,10.5 C21,16.2989899 16.2989899,21 10.5,21 Z M17,9 C16.9119,7.6171 16.5731,6.2617 16,5 L5,5 C4.427,6.2617 4.0881,7.6171 4,9 L17,9 Z M6,10 L6,16 L11,16 L11,11 L14,11 L14,16 L15,16 L15,10 L6,10 Z M7,13 L7,11 L10,11 L10,13 L7,13 Z" id="path-1"></path>
+    </defs>
+    <g id="Elements-/-Map-/-Marker-/-Pois-/-Competitor" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="#FFFFFF" cx="10.5" cy="10.5" r="9.5"></circle>
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <use id="Combined-Shape" fill="#373F51" xlink:href="#path-1"></use>
+    </g>
+</svg>
