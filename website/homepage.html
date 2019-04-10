@@ -122,7 +122,7 @@
       apiKey: 'default_public'
     });
 
-    const buildingsSource = new carto.source.Dataset('sf_buildings_clip_1');
+    const buildingsSource = new carto.source.Dataset('sf_buildings_clip_homepage');
     const buildingsViz = new carto.Viz(`
         @area: $brectarea
         @height: $prcenth
@@ -137,7 +137,7 @@
     const buildingsLayer = new carto.Layer('buildingsLayer', buildingsSource, buildingsViz);
 
     //LINES LAYER
-    const linesSource = new carto.source.Dataset('od_routes_sf_2mi_1_1_1');
+    const linesSource = new carto.source.Dataset('sf_routes_homepage');
     const linesViz = new carto.Viz(`
         @pale_y: [rgba(244, 230, 193,0.3),rgba(244, 230, 193,0.6)]
         
