@@ -1,0 +1,876 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>weather_source_jan2019_us_doy31</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta charset="UTF-8">
+  <!-- Include CARTO VL JS -->
+  <script src="https://libs.cartocdn.com/carto-vl/v1.4/carto-vl.min.js"></script>
+  <!-- Include Mapbox GL JS -->
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
+  <!-- Include Mapbox GL CSS -->
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
+
+  <!-- Include Airship -->
+  <script nomodule="" src="https://libs.cartocdn.com/airship-components/v2.2.0-rc.2/airship.js"></script>
+  <script type="module" src="https://libs.cartocdn.com/airship-components/v2.2.0-rc.2/airship/airship.esm.js"></script>
+  <script src="https://libs.cartocdn.com/airship-bridge/v2.2.0-rc.2/asbridge.min.js"></script>
+  <link href="https://libs.cartocdn.com/airship-style/v2.2.0-rc.2/airship.min.css" rel="stylesheet">
+  <link href="https://libs.cartocdn.com/airship-icons/v2.2.0-rc.2/icons.css" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+
+  
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  aside.as-sidebar {
+    min-width: 300px;
+  }
+</style>
+  <style>
+  #map {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+
+  .map-info {
+    position: absolute;
+    bottom: 0;
+    padding: 0 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    color: rgba(0, 0, 0, 0.75);
+    font-size: 12px;
+    width: auto;
+    height: 18px;
+    font-family: 'Open Sans';
+  }
+
+  .map-footer {
+    background: #F2F6F9;
+    font-family: Roboto;
+    font-size: 12px;
+    line-height: 24px;
+    color: #162945;
+    text-align: center;
+  }
+
+  .map-footer a {
+    text-decoration: none;
+  }
+
+  .map-footer a:hover {
+    text-decoration: underline;
+  }
+</style>
+    <style>
+    #error-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      visibility: hidden;
+      padding: 1em;
+      font-family: "Courier New", Courier, monospace;
+      margin: 0 auto;
+      font-size: 14px;
+      overflow: auto;
+      z-index: 1000;
+      color: black;
+    }
+
+    .error-section {
+      padding: 1em;
+      border-radius: 5px;
+      background-color: #fee;
+    }
+
+    #error-container #error-highlight {
+      font-weight: bold;
+      color: inherit;
+    }
+
+    #error-container #error-type {
+      color: #008000;
+    }
+
+    #error-container #error-name {
+      color: #ba2121;
+    }
+
+    #error-container #error-content {
+      margin-top: 0.4em;
+    }
+
+    .error-details {
+      margin-top: 1em;
+    }
+
+    #error-stacktrace {
+      list-style: none;
+    }
+</style>
+  <style>
+    .popup-content {
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+    }
+
+    .popup-name {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 20px;
+      margin-bottom: 4px;
+    }
+
+    .popup-value {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .popup-value:not(:last-of-type) {
+      margin-bottom: 16px;
+    }
+</style>
+  <style>
+  as-widget-header .as-widget-header__header {
+    margin-bottom: 8px;
+  }
+
+  as-widget-header .as-widget-header__subheader {
+    margin-bottom: 12px;
+  }
+
+  as-category-widget {
+    max-height: 250px;
+  }
+</style>
+</head>
+
+<body class="as-app-body as-app">
+  <as-responsive-content>
+    
+    <main class="as-main">
+      <div class="as-map-area">
+        <div id="map"></div>
+        
+        
+          <div class="as-map-panels" data-name="Legends">
+            <div class="as-panel as-panel--left as-panel--top">
+              
+
+<div class="as-panel__element" id="legends">
+  
+
+  
+    
+  
+    
+  
+    
+      <as-legend
+        heading="Temperature Jan 31 2019 (°C)"
+        description="WEATHER SOURCE"
+      >
+        <as-legend-color-continuous-polygon id="layer2_legend" slot="legends"></as-legend-color-continuous-polygon>
+        
+      </as-legend>
+    
+  
+</div>
+            </div> <!-- as-panel -->
+          </div> <!-- as-map-panels -->
+        
+      </div> <!-- as-map-area -->
+    </main> <!-- as-main -->
+  </as-responsive-content>
+
+  
+    <div class="map-footer">
+  <span>Crafted with ♥ and CARTOframes | <a href="https://carto.com/developers/cartoframes/">Learn more</a></span>
+</div>
+  
+
+  <div id="error-container" class="error">
+  <p>There is a <span class="errors" id="error-highlight"></span>
+  from the <a href="https://carto.com/developers/carto-vl/" target="_blank">CARTO VL</a> library:</p>
+  <section class="error-section">
+    <span class="errors" id="error-name"></span>:
+    <section id="error-content">
+      <span class="errors" id="error-type"></span>
+      <span class="errors" id="error-message"></span>
+    </section>
+  </section>
+
+  <details class="error-details">
+    <summary>StackTrace</summary>
+    <ul id="error-stacktrace"></ul>
+  </details>
+</div>
+
+  <script>
+    
+  function createDefaultLegend(layers) {
+  const defaultLegendContainer = document.querySelector('#defaultLegendContainer');
+  defaultLegendContainer.style.display = 'none';
+
+  AsBridge.VL.Legends.layersLegend(
+    '#defaultLegend',
+    layers,
+    {
+      onLoad: () => defaultLegendContainer.style.display = 'unset'
+    }
+  )
+}
+
+function createLegend(layer, legendData, layerIndex) {
+  const element = document.querySelector(`#layer${layerIndex}_legend`);
+
+  if (legendData.prop) {
+    const config = { othersLabel: 'Others' }  // TODO: i18n
+    const opts = { format, config };
+
+    if (legendData.type.startsWith('size-continuous')) {
+      config.samples = 4;
+    }
+    
+    AsBridge.VL.Legends.rampLegend(
+      element,
+      layer,
+      legendData.prop,
+      opts
+    );
+  } else {
+    // TODO: we don't have a bridge for this case, should this even be a case?
+  }
+}
+
+
+/** From https://github.com/errwischt/stacktrace-parser/blob/master/src/stack-trace-parser.js */
+
+const UNKNOWN_FUNCTION = '<unknown>';
+
+/**
+ * This parses the different stack traces and puts them into one format
+ * This borrows heavily from TraceKit (https://github.com/csnover/TraceKit)
+ */
+function parse(stackString) {
+  const lines = stackString.split('\n');
+
+  return lines.reduce((stack, line) => {
+    const parseResult =
+      parseChrome(line) ||
+      parseWinjs(line) ||
+      parseGecko(line);
+
+    if (parseResult) {
+      stack.push(parseResult);
+    }
+
+    return stack;
+  }, []);
+}
+
+const chromeRe = /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
+const chromeEvalRe = /\((\S*)(?::(\d+))(?::(\d+))\)/;
+
+function parseChrome(line) {
+  const parts = chromeRe.exec(line);
+
+  if (!parts) {
+    return null;
+  }
+
+  const isNative = parts[2] && parts[2].indexOf('native') === 0; // start of line
+  const isEval = parts[2] && parts[2].indexOf('eval') === 0; // start of line
+
+  const submatch = chromeEvalRe.exec(parts[2]);
+  if (isEval && submatch != null) {
+    // throw out eval line/column and use top-most line/column number
+    parts[2] = submatch[1]; // url
+    parts[3] = submatch[2]; // line
+    parts[4] = submatch[3]; // column
+  }
+
+  return {
+    file: !isNative ? parts[2] : null,
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: isNative ? [parts[2]] : [],
+    lineNumber: parts[3] ? +parts[3] : null,
+    column: parts[4] ? +parts[4] : null,
+  };
+}
+
+const winjsRe = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+
+function parseWinjs(line) {
+  const parts = winjsRe.exec(line);
+
+  if (!parts) {
+    return null;
+  }
+
+  return {
+    file: parts[2],
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: [],
+    lineNumber: +parts[3],
+    column: parts[4] ? +parts[4] : null,
+  };
+}
+
+const geckoRe = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|resource|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i;
+const geckoEvalRe = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
+
+function parseGecko(line) {
+  const parts = geckoRe.exec(line);
+
+  if (!parts) {
+    return null;
+  }
+
+  const isEval = parts[3] && parts[3].indexOf(' > eval') > -1;
+
+  const submatch = geckoEvalRe.exec(parts[3]);
+  if (isEval && submatch != null) {
+    // throw out eval line/column and use top-most line number
+    parts[3] = submatch[1];
+    parts[4] = submatch[2];
+    parts[5] = null; // no column when eval
+  }
+
+  return {
+    file: parts[3],
+    methodName: parts[1] || UNKNOWN_FUNCTION,
+    arguments: parts[2] ? parts[2].split(',') : [],
+    lineNumber: parts[4] ? +parts[4] : null,
+    column: parts[5] ? +parts[5] : null,
+  };
+}
+/*
+ *  base64.js
+ *
+ *  Licensed under the BSD 3-Clause License.
+ *    http://opensource.org/licenses/BSD-3-Clause
+ *
+ *  References:
+ *    http://en.wikipedia.org/wiki/Base64
+ */
+;(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined'
+        ? module.exports = factory(global)
+        : typeof define === 'function' && define.amd
+        ? define(factory) : factory(global)
+}((
+    typeof self !== 'undefined' ? self
+        : typeof window !== 'undefined' ? window
+        : typeof global !== 'undefined' ? global
+: this
+), function(global) {
+    'use strict';
+    // existing version for noConflict()
+    global = global || {};
+    var _Base64 = global.Base64;
+    var version = "2.5.1";
+    // if node.js and NOT React Native, we use Buffer
+    var buffer;
+    if (typeof module !== 'undefined' && module.exports) {
+        try {
+            buffer = eval("require('buffer').Buffer");
+        } catch (err) {
+            buffer = undefined;
+        }
+    }
+    // constants
+    var b64chars
+        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    var b64tab = function(bin) {
+        var t = {};
+        for (var i = 0, l = bin.length; i < l; i++) t[bin.charAt(i)] = i;
+        return t;
+    }(b64chars);
+    var fromCharCode = String.fromCharCode;
+    // encoder stuff
+    var cb_utob = function(c) {
+        if (c.length < 2) {
+            var cc = c.charCodeAt(0);
+            return cc < 0x80 ? c
+                : cc < 0x800 ? (fromCharCode(0xc0 | (cc >>> 6))
+                                + fromCharCode(0x80 | (cc & 0x3f)))
+                : (fromCharCode(0xe0 | ((cc >>> 12) & 0x0f))
+                   + fromCharCode(0x80 | ((cc >>>  6) & 0x3f))
+                   + fromCharCode(0x80 | ( cc         & 0x3f)));
+        } else {
+            var cc = 0x10000
+                + (c.charCodeAt(0) - 0xD800) * 0x400
+                + (c.charCodeAt(1) - 0xDC00);
+            return (fromCharCode(0xf0 | ((cc >>> 18) & 0x07))
+                    + fromCharCode(0x80 | ((cc >>> 12) & 0x3f))
+                    + fromCharCode(0x80 | ((cc >>>  6) & 0x3f))
+                    + fromCharCode(0x80 | ( cc         & 0x3f)));
+        }
+    };
+    var re_utob = /[\uD800-\uDBFF][\uDC00-\uDFFFF]|[^\x00-\x7F]/g;
+    var utob = function(u) {
+        return u.replace(re_utob, cb_utob);
+    };
+    var cb_encode = function(ccc) {
+        var padlen = [0, 2, 1][ccc.length % 3],
+        ord = ccc.charCodeAt(0) << 16
+            | ((ccc.length > 1 ? ccc.charCodeAt(1) : 0) << 8)
+            | ((ccc.length > 2 ? ccc.charCodeAt(2) : 0)),
+        chars = [
+            b64chars.charAt( ord >>> 18),
+            b64chars.charAt((ord >>> 12) & 63),
+            padlen >= 2 ? '=' : b64chars.charAt((ord >>> 6) & 63),
+            padlen >= 1 ? '=' : b64chars.charAt(ord & 63)
+        ];
+        return chars.join('');
+    };
+    var btoa = global.btoa ? function(b) {
+        return global.btoa(b);
+    } : function(b) {
+        return b.replace(/[\s\S]{1,3}/g, cb_encode);
+    };
+    var _encode = buffer ?
+        buffer.from && Uint8Array && buffer.from !== Uint8Array.from
+        ? function (u) {
+            return (u.constructor === buffer.constructor ? u : buffer.from(u))
+                .toString('base64')
+        }
+        :  function (u) {
+            return (u.constructor === buffer.constructor ? u : new  buffer(u))
+                .toString('base64')
+        }
+        : function (u) { return btoa(utob(u)) }
+    ;
+    var encode = function(u, urisafe) {
+        return !urisafe
+            ? _encode(String(u))
+            : _encode(String(u)).replace(/[+\/]/g, function(m0) {
+                return m0 == '+' ? '-' : '_';
+            }).replace(/=/g, '');
+    };
+    var encodeURI = function(u) { return encode(u, true) };
+    // decoder stuff
+    var re_btou = new RegExp([
+        '[\xC0-\xDF][\x80-\xBF]',
+        '[\xE0-\xEF][\x80-\xBF]{2}',
+        '[\xF0-\xF7][\x80-\xBF]{3}'
+    ].join('|'), 'g');
+    var cb_btou = function(cccc) {
+        switch(cccc.length) {
+        case 4:
+            var cp = ((0x07 & cccc.charCodeAt(0)) << 18)
+                |    ((0x3f & cccc.charCodeAt(1)) << 12)
+                |    ((0x3f & cccc.charCodeAt(2)) <<  6)
+                |     (0x3f & cccc.charCodeAt(3)),
+            offset = cp - 0x10000;
+            return (fromCharCode((offset  >>> 10) + 0xD800)
+                    + fromCharCode((offset & 0x3FF) + 0xDC00));
+        case 3:
+            return fromCharCode(
+                ((0x0f & cccc.charCodeAt(0)) << 12)
+                    | ((0x3f & cccc.charCodeAt(1)) << 6)
+                    |  (0x3f & cccc.charCodeAt(2))
+            );
+        default:
+            return  fromCharCode(
+                ((0x1f & cccc.charCodeAt(0)) << 6)
+                    |  (0x3f & cccc.charCodeAt(1))
+            );
+        }
+    };
+    var btou = function(b) {
+        return b.replace(re_btou, cb_btou);
+    };
+    var cb_decode = function(cccc) {
+        var len = cccc.length,
+        padlen = len % 4,
+        n = (len > 0 ? b64tab[cccc.charAt(0)] << 18 : 0)
+            | (len > 1 ? b64tab[cccc.charAt(1)] << 12 : 0)
+            | (len > 2 ? b64tab[cccc.charAt(2)] <<  6 : 0)
+            | (len > 3 ? b64tab[cccc.charAt(3)]       : 0),
+        chars = [
+            fromCharCode( n >>> 16),
+            fromCharCode((n >>>  8) & 0xff),
+            fromCharCode( n         & 0xff)
+        ];
+        chars.length -= [0, 0, 2, 1][padlen];
+        return chars.join('');
+    };
+    var _atob = global.atob ? function(a) {
+        return global.atob(a);
+    } : function(a){
+        return a.replace(/\S{1,4}/g, cb_decode);
+    };
+    var atob = function(a) {
+        return _atob(String(a).replace(/[^A-Za-z0-9\+\/]/g, ''));
+    };
+    var _decode = buffer ?
+        buffer.from && Uint8Array && buffer.from !== Uint8Array.from
+        ? function(a) {
+            return (a.constructor === buffer.constructor
+                    ? a : buffer.from(a, 'base64')).toString();
+        }
+        : function(a) {
+            return (a.constructor === buffer.constructor
+                    ? a : new buffer(a, 'base64')).toString();
+        }
+        : function(a) { return btou(_atob(a)) };
+    var decode = function(a){
+        return _decode(
+            String(a).replace(/[-_]/g, function(m0) { return m0 == '-' ? '+' : '/' })
+                .replace(/[^A-Za-z0-9\+\/]/g, '')
+        );
+    };
+    var noConflict = function() {
+        var Base64 = global.Base64;
+        global.Base64 = _Base64;
+        return Base64;
+    };
+    // export Base64
+    global.Base64 = {
+        VERSION: version,
+        atob: atob,
+        btoa: btoa,
+        fromBase64: decode,
+        toBase64: encode,
+        utob: utob,
+        encode: encode,
+        encodeURI: encodeURI,
+        btou: btou,
+        decode: decode,
+        noConflict: noConflict,
+        __buffer__: buffer
+    };
+    // if ES5 is available, make Base64.extendString() available
+    if (typeof Object.defineProperty === 'function') {
+        var noEnum = function(v){
+            return {value:v,enumerable:false,writable:true,configurable:true};
+        };
+        global.Base64.extendString = function () {
+            Object.defineProperty(
+                String.prototype, 'fromBase64', noEnum(function () {
+                    return decode(this)
+                }));
+            Object.defineProperty(
+                String.prototype, 'toBase64', noEnum(function (urisafe) {
+                    return encode(this, urisafe)
+                }));
+            Object.defineProperty(
+                String.prototype, 'toBase64URI', noEnum(function () {
+                    return encode(this, true)
+                }));
+        };
+    }
+    //
+    // export Base64 to the namespace
+    //
+    if (global['Meteor']) { // Meteor.js
+        Base64 = global.Base64;
+    }
+    // module.exports and AMD are mutually exclusive.
+    // module.exports has precedence.
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports.Base64 = global.Base64;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], function(){ return global.Base64 });
+    }
+    // that's it!
+    return {Base64: global.Base64}
+}));
+
+function format(value) {
+  if (Array.isArray(value)) {
+    const [first, second] = value;
+    if (first === -Infinity) {
+      return `< ${formatValue(second)}`;
+    }
+    if (second === Infinity) {
+      return `> ${formatValue(first)}`;
+    }
+    return `${formatValue(first)} - ${formatValue(second)}`
+  }
+  return formatValue(value);
+}
+
+function formatValue(value) {
+  if (typeof value === 'number') {
+    return formatNumber(value);
+  }
+  return value;
+}
+
+function formatNumber(value) {
+  const log = Math.log10(Math.abs(value))
+  if ((log > 4 || log < -2.00000001) && value) {
+    return value.toExponential(2);
+  } else if (!Number.isInteger(value)) {
+    return value.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 3
+    });
+  } else {
+    return value.toLocaleString();
+  }
+}
+
+const responsive = document.querySelector('as-responsive-content');
+
+function onReady() {
+  const BASEMAPS = {
+    DarkMatter: carto.basemaps.darkmatter,
+    Voyager: carto.basemaps.voyager,
+    Positron: carto.basemaps.positron
+  };
+
+  if ("") {
+    mapboxgl.accessToken = "";
+  }
+  // Fetch CARTO basemap if it's there, else try to use other supplied style
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: BASEMAPS['Positron'] || 'Positron' || {
+        'version': 8,
+        'sources': {},
+        'layers': [{
+            'id': 'background',
+            'type': 'background',
+            'paint': {
+                'background-color': ''
+            }
+        }]
+    },
+    zoom: 9,
+    dragRotate: false
+  });
+
+  const mapInfo$ = document.getElementById('map-info');
+
+  
+
+  const layers = [{"credentials": {"api_key": "_lL5RgBqXHe5H0LrfgSQqg", "base_url": "https://do-v2-demo.carto.com", "username": "do-v2-demo"}, "interactivity": [{"attrs": [{"name": "v9c1e76", "title": "Temperature (\u00b0C)"}], "event": "click"}], "legend": {"description": "WEATHER SOURCE", "footer": "", "prop": "color", "title": "Temperature Jan 31 2019 (\u00b0C)", "type": "color-continuous-polygon"}, "query": "SELECT * FROM \"public\".\"weather_source_jan2019_us_doy31\"", "type": "Query", "viz": "@v9c1e76: $avg_temperature_air_2m_f\nstrokeColor: opacity(#222,ramp(linear(zoom(),0,18),[0,0.6]))\n\n                color: opacity(ramp(buckets($avg_temperature_air_2m_f,[-40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40]), [#313695,#4575b4,#74add1,#abd9e9,#e0f3f8,#ffffbf,#fee090,#fdae61,#f46d43,#d73027,#a50026]), .6)\n                strokeWidth: 0.0,\n                width: scaled(0.8,2)\n                ", "widgets": []}, {"credentials": {"api_key": "_lL5RgBqXHe5H0LrfgSQqg", "base_url": "https://do-v2-demo.carto.com", "username": "do-v2-demo"}, "interactivity": [], "legend": {}, "query": "SELECT * FROM \"public\".\"ne_50m_admin_0_boundary_lines_land\"", "type": "Query", "viz": "color: opacity(#555,0.2), width:2", "widgets": []}, {"credentials": {"api_key": "_lL5RgBqXHe5H0LrfgSQqg", "base_url": "https://do-v2-demo.carto.com", "username": "do-v2-demo"}, "interactivity": [], "legend": {}, "query": "SELECT * FROM \"public\".\"ne_50m_admin_1_states_provinces\"", "type": "Query", "viz": "strokeColor: opacity(#555,0.2), strokeWidth:1, color: transparent", "widgets": []}];
+
+  map.fitBounds([[-178.194518439938, -55.1140007401231], [153.616960968765, 83.1161137814993]], {animate: false, padding: 50, maxZoom: 14});
+
+  
+    map.flyTo({"center": [-92.071244, 37.800194], "zoom": 3});
+  
+
+  const mapLayers = [];
+
+  const interactiveLayers = [];
+  const interactiveMapLayers = [];
+
+  layers.forEach((layer, index) => {
+    const factory = new SourceFactory();
+    const mapSource = factory.createSource(layer);
+    const mapViz = new carto.Viz(layer['viz']);
+    const mapLayer = new carto.Layer(`layer${index}`, mapSource, mapViz);
+
+    mapLayers.push(mapLayer);
+
+    try {
+      mapLayer._updateLayer.catch(displayError);
+    } catch (err) {
+      throw err;
+    }
+
+    mapLayer.addTo(map);
+
+    if (layer.interactivity) {
+      interactiveLayers.push(layer);
+      interactiveMapLayers.push(mapLayer);
+    }
+
+    
+    if (layer.legend) {
+      createLegend(mapLayer, layer.legend, layers.length - index - 1);
+    }
+    
+
+    if (layer.widgets.length) {
+      layer.widgets.forEach((widget, widgetIndex) => {
+        const id = `layer${layers.length - index - 1}_widget${widgetIndex}`;
+        widget.id = id;
+      });
+
+      mapLayer.on('updated', () => {
+        layer.widgets
+          .filter((widget) => !widget.has_bridge)
+          .forEach((widget) => {
+            const value = widget.variable_name && mapLayer.viz.variables[widget.variable_name]
+              ? mapLayer.viz.variables[widget.variable_name].value
+              : null;
+
+            renderWidget(widget, value);
+          })
+      });
+
+      bridgeLayerWidgets(carto, mapLayer, mapSource, map, layer.widgets);
+    }
+  });
+
+  if (interactiveLayers.length > 0) {
+    const interactivity = new carto.Interactivity(interactiveMapLayers);
+    const popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    });
+
+    let clickAttrs = [];
+    let hoverAttrs = [];
+    interactiveLayers.forEach((interactiveLayer) => {
+      interactiveLayer.interactivity.forEach((interactivityDef) => {
+        if (interactivityDef.event === 'click') {
+          clickAttrs = clickAttrs.concat(interactivityDef.attrs);
+        } else if (interactivityDef.event === 'hover') {
+          hoverAttrs = hoverAttrs.concat(interactivityDef.attrs);
+        }
+      });
+    });
+
+    resetPopupClick(interactivity);
+    if (clickAttrs.length > 0) {
+      setPopupsClick(popup, interactivity, clickAttrs);
+    }
+
+    resetPopupHover(interactivity);
+    if (hoverAttrs.length > 0) {
+      setPopupsHover(popup, interactivity, hoverAttrs);
+    }
+  }
+
+  
+
+  function updatePopup(popup, event, attrs) {
+    if (event.features.length > 0) {
+      let popupHTML = '';
+      const layerIDs = [];
+
+      for (const feature of event.features) {
+        if (layerIDs.includes(feature.layerId)) {
+          continue;
+        }
+        // Track layers to add only one feature per layer
+        layerIDs.push(feature.layerId);
+    
+        for (const item of attrs) {
+          const variable = feature.variables[item.name];
+          if (variable) {
+            let value = variable.value;
+            value = formatValue(value)
+
+            popupHTML = `
+              <span class="popup-name">${item.title}</span>
+              <span class="popup-value">${value}</span>
+            ` + popupHTML;
+          }
+        }
+      }
+
+      popup
+          .setLngLat([event.coordinates.lng, event.coordinates.lat])
+          .setHTML(`<div class="popup-content">${popupHTML}</div>`);
+
+      if (!popup.isOpen()) {
+        popup.addTo(map);
+      }
+    } else {
+      popup.remove();
+    }
+  }
+
+  function resetPopupClick(interactivity) {
+    interactivity.off('featureClick');
+  }
+
+  function resetPopupHover(interactivity) {
+    interactivity.off('featureHover');
+  }
+
+  function setPopupsClick(popup, interactivity, attrs) {
+    interactivity.on('featureClick', (event) => {
+      updatePopup(popup, event, attrs)
+    });
+  }
+
+  function setPopupsHover(popup, interactivity, attrs) {
+    interactivity.on('featureHover', (event) => {
+      updatePopup(popup, event, attrs)
+    });
+  }
+
+  function SourceFactory() {
+    const sourceTypes = {
+      GeoJSON: (layer) => new carto.source.GeoJSON(_decodeJSONQuery(layer.query)),
+      Query: (layer) => {
+        const auth = {
+          username: layer.credentials['username'],
+          apiKey: layer.credentials['api_key'] || 'default_public'
+        };
+        const config = {
+          serverURL: layer.credentials['base_url'] || `https://${layer.credentials['username']}.carto.com/`
+        };
+        return new carto.source.SQL(layer.query, auth, config)
+      },
+      MVT: (layer) => new carto.source.MVT(layer.query.file, JSON.parse(layer.query.metadata)),
+    }
+
+    this.createSource = (layer) => {
+      return sourceTypes[layer.type](layer);
+    }
+  }
+}
+
+function setReady () {
+  try {
+    onReady()
+  } catch (e) {
+    displayError(e);
+  }
+}
+
+function displayError(e) {
+  const error$ = document.getElementById('error-container');
+  const errors$ = error$.getElementsByClassName('errors');
+  const stacktrace$ = document.getElementById('error-stacktrace');
+
+  errors$[0].innerHTML = e.name;
+  errors$[1].innerHTML = e.name;
+  errors$[2].innerHTML = e.type;
+  errors$[3].innerHTML = e.message.replace(e.type, '');
+
+  error$.style.visibility = 'visible';
+
+  const stack = parse(e.stack);
+  const list = stack.map(item => {
+    return `<li>
+      at <span class="stacktrace-method">${item.methodName}:</span>
+      (${item.file}:${item.lineNumber}:${item.column})
+    </li>`;
+  });
+
+  stacktrace$.innerHTML = list.join('\n');
+}
+
+function _decodeJSONQuery(query) {
+  return JSON.parse(Base64.decode(query.replace(/b\'/, '\'')))
+}
+
+responsive.addEventListener('ready', setReady);
+  </script>
+</body>
+</html>
