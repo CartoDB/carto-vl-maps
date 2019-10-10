@@ -649,7 +649,7 @@ function onReady() {
             }
         }]
     },
-    zoom: 11,
+    zoom: 9,
     dragRotate: false
   });
 
@@ -657,7 +657,7 @@ function onReady() {
 
   
 
-  const layers = [{"credentials": {"api_key": "Z8Q3LoQqyXVz8ilQ-4fOUg", "base_url": "https://do-v2-demo.carto.com", "username": "do-v2-demo"}, "interactivity": [{"attrs": [{"name": "vceda89", "title": "inccymedhh"}], "event": "click"}], "legend": {"description": "RAW DATA SOURCE: AGS", "footer": "", "prop": "color", "title": "Median Income per HH", "type": "color-continuous-polygon"}, "query": "SELECT * FROM ags_data_state36_q_zoom17_downscaled_wo_sett_long_island ", "type": "Query", "viz": "@vceda89: $inccymedhh\nstrokeColor: opacity(#2c2c2c,ramp(linear(zoom(),2,18),[0.2,0.6]))\n\n                color: opacity(ramp(buckets($inccymedhh,[0, 15000, 30000, 50000, 70000, 100000, 150000, 300000, 500000, 1000000]), tealrose), .7)\n                strokeWidth: 0.0\n                ", "widgets": []}, {"credentials": {"api_key": "Z8Q3LoQqyXVz8ilQ-4fOUg", "base_url": "https://do-v2-demo.carto.com", "username": "do-v2-demo"}, "interactivity": [], "legend": {}, "query": "SELECT * FROM ags_data_state36_long_island ", "type": "Query", "viz": "strokeColor: opacity(#2c2c2c,ramp(linear(zoom(),2,18),[0.2,0.6]))\n\n                color: opacity(white, .0)\n                strokeWidth: 1.0\n                ", "widgets": []}];
+  const layers = [{"credentials": {"api_key": "Z8Q3LoQqyXVz8ilQ-4fOUg", "base_url": "https://do-v2-demo.carto.com", "username": "do-v2-demo"}, "interactivity": [{"attrs": [{"name": "vceda89", "title": "inccymedhh"}], "event": "click"}], "legend": {"description": "RAW DATA SOURCE: AGS", "footer": "", "prop": "color", "title": "Median Income per HH", "type": "color-continuous-polygon"}, "query": "SELECT * FROM ags_data_state36_q_zoom17_downscaled_wo_sett_long_island ", "type": "Query", "viz": "@vceda89: $inccymedhh\nstrokeColor: opacity(#2c2c2c,ramp(linear(zoom(),2,18),[0.2,0.6]))\n\n                color: opacity(ramp(buckets($inccymedhh,[0, 15000, 30000, 50000, 70000, 100000, 150000, 300000, 500000, 1000000]), tealrose), .7)\n                strokeWidth: 0.0\n                ", "widgets": []}, {"credentials": {"api_key": "Z8Q3LoQqyXVz8ilQ-4fOUg", "base_url": "https://do-v2-demo.carto.com", "username": "do-v2-demo"}, "interactivity": [], "legend": {}, "query": "SELECT * FROM ags_data_state36_long_island ", "type": "Query", "viz": "strokeColor: opacity(#555,ramp(linear(zoom(),2,18),[0.2,0.6]))\n\n                color: opacity(white, .0)\n                strokeWidth: 1\n                ", "widgets": []}];
 
   map.fitBounds([[-74.0423583984375, 40.54182], [-71.847707, 41.21581]], {animate: false, padding: 50, maxZoom: 14});
 
