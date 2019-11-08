@@ -698,7 +698,7 @@ function onReady() {
 
   
 
-  const layers = [{"credentials": {"api_key": "HqiMsjjlbACX0Fyfjc1OcQ", "base_url": "https://dfan.carto.com", "username": "dfan"}, "interactivity": [], "legend": {"description": "in thousands of US dollars ($)", "footer": "", "prop": "color", "title": "Revenue Prediction", "type": "color-continuous-polygon"}, "query": "SELECT * FROM \"dfan\".\"prediction_blog\"", "type": "Query", "viz": "color: opacity(ramp(linear($prediction, globalPercentile($prediction, 1), globalPercentile($prediction, 99)), OrYel),0.8)\nwidth: linear($prediction, globalPercentile($prediction, 1), globalPercentile($prediction, 99))*50\nstrokeWidth: 1.5\nstrokeColor: ramp(linear($prediction, globalPercentile($prediction, 1), globalPercentile($prediction, 99)), OrYel)\norder: asc(width())\n", "widgets": []}];
+  const layers = [{"credentials": {"api_key": "4zL2sLbMUNbIJ6CxQGT-qg", "base_url": "https://dfan.carto.com", "username": "dfan"}, "interactivity": [], "legend": {"description": "in thousands of US dollars ($)", "footer": "", "prop": "color", "title": "Revenue Prediction", "type": "color-continuous-polygon"}, "query": "SELECT * FROM \"dfan\".\"prediction_blog\"", "type": "Query", "viz": "color: opacity(ramp(linear($prediction, globalPercentile($prediction, 1), globalPercentile($prediction, 99)), OrYel),0.8)\nwidth: linear($prediction, globalPercentile($prediction, 1), globalPercentile($prediction, 99))*50\nstrokeWidth: 1.5\nstrokeColor: ramp(linear($prediction, globalPercentile($prediction, 1), globalPercentile($prediction, 99)), OrYel)\norder: asc(width())\n", "widgets": []}];
 
   map.fitBounds([[-119.15893, 33.109759], [-116.388271, 34.471287]], {animate: false, padding: 50, maxZoom: 14});
 
