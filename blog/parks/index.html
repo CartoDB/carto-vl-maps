@@ -127,11 +127,11 @@
       // CARTO client
       const client = new carto.Client({
         apiKey: 'default_public',
-        username: 'mballesteros'
+        username: 'public'
       });
           
       // Insert layer cities
-      const source = new carto.source.SQL(`SELECT * FROM mballesteros.parksrec WHERE city='New York'`);
+      const source = new carto.source.SQL(`SELECT * FROM public.parksrec WHERE city='New York'`);
       const style = new carto.style.CartoCSS(
         `#layer {
         polygon-fill: ramp([grav1_00], (#E4F1E1, #9CCDC1, #63A6A0, #337F7F, #0D585F), quantiles);}
@@ -148,7 +148,7 @@
 
       // Set City when changing dropdown 1
       function setCity(cityName) { 
-        source.setQuery (`SELECT * FROM mballesteros.parksrec WHERE city='${cityName}'`)
+        source.setQuery (`SELECT * FROM public.parksrec WHERE city='${cityName}'`)
       }
 
       document.getElementById('selectDrop').addEventListener("change", function (e) {
@@ -159,7 +159,7 @@
       // Get cities from dataset
       function getCities(){
         return fetch(
-          `https://mballesteros.carto.com/api/v2/sql?q=SELECT distinct city FROM mballesteros.parksrec`
+          `https://public.carto.com/api/v2/sql?q=SELECT distinct city FROM public.parksrec`
               ).then((resp) => resp.json())
               .then((response) => {
               return response.rows.map(function(r){  
@@ -176,7 +176,7 @@
 
       // Set bounds when changing city
       function fitBounds(cityName) { 
-        return fetch (`https://mballesteros.carto.com/api/v2/sql?q=SELECT ST_Extent(the_geom) as extent FROM mballesteros.parksrec WHERE city='${cityName}'`)
+        return fetch (`https://public.carto.com/api/v2/sql?q=SELECT ST_Extent(the_geom) as extent FROM public.parksrec WHERE city='${cityName}'`)
           .then((resp) => resp.json())
           .then((response) => {
             const extent =/BOX\((.+) (.+),(.+) (.+)\)/.exec(response.rows[0].extent)
