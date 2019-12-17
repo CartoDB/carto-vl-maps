@@ -5,111 +5,158 @@
     <title>Parks | CARTO</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700|Open+Sans:300,400,600" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:600|Open+Sans:400" rel="stylesheet">
     <!-- Include Leaflet -->
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
     <link href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" rel="stylesheet">
     <!-- Include CARTO.js -->
     <script src="https://libs.cartocdn.com/carto.js/v4.1.11/carto.min.js"></script>
+    <!-- Include Airship -->
+    <script src="https://libs.cartocdn.com/airship-components/v2.1.1/airship.js"></script>
   </head>
 
   <style>
-    html,
-    body,
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
     #map {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-        margin: 0;
-
+      position: absolute;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
     }
 
-    div#searchbox {
-        background-color: #d2eaef;
-        opacity: 0.8;
-        position: absolute;
-        top: 10px;
-        left: 50px;
-        width: auto;
-        height: auto;
-        padding: 10px;
-        display: block;
-        z-index: 9000;
-
+    aside.toolbox {
+      position: absolute;
+      z-index: 2;
+      top: 24px;
+      right: 24px;
     }
 
-    div#searchbox input {
-        width: 200px;
+    .box {
+      z-index: 2;
+      margin: 0 0 24px;
+      padding: 16px;
+      border-radius: 4px;
+      background: #FFF;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.24);
     }
 
-    div#results {
-        background: #FFF;
+    .box header h1 {
+      display: inline-block;
+      width: calc(100% - 24px);
+      margin: 0;
+      color: #2E3C43;
+      font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 32px;
     }
 
-    </style>
+    .dropdowns {
+      display: flex;
+      margin-top: 16px;
+    }
+
+    .dropdowns select {
+      flex: 1;
+      font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+    }
+
+    .dropdowns select:first-child {
+      margin-right: 16px;
+    }
+
+    .legend {
+      margin-top: 16px;
+      color: #747D82;
+      font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+    }
+  </style>
 
   <body>
+    <aside class="toolbox">
+      <div class="box">
+        <header>
+          <h1>Parks access</h1>
+        </header>
+        <section>
+          <div class="dropdowns">
+            <select id="selectDrop">
+              <option selected value="New York">New York</option>
+            </select> 
+              
+            <select id="selectParam"> 
+              <option value="itx1_00_area" selected>Buffer (R = 1&nbsp;km)</option>
+              <option value="grav1_00">Gravity (α = 1)</option>
+              <option value="dsteps_fit">GEE FE Fit</option>
+              <option value="distance_fit">GEE Dist. Fit</option>
+            </select>
+          </div>
+      
+          <as-legend-color-bins-polygon class="legend" id="legend" orientation="horizontal"></as-legend-color-bins-polygon>           
+        </section>
+      </div>
+    </aside>
     <div id="map"></div>
-    <div id="searchbox">
-      <select id="selectDrop">
-        <option selected value="">Select city</option>
-      </select> 
-        
-      <select id="selectParam"> 
-        <option value="itx1_00_area" selected>Buffer (R = 1&nbsp;km)</option>
-        <option value="grav1_00">Gravity (α = 1)</option>
-        <option value="dsteps_fit">GEE FE Fit</option>
-        <option value="distance_fit">GEE Dist. Fit</option>
-      </select>
-    
-    </div>
 
     <script>
 
       const map = L.map('map').setView([40.70979201243498, -73.97781372070314], 10);
 
-        //disable scroll wheel zoom
-
+      //disable scroll wheel zoom
       map.scrollWheelZoom.disable();
 
-       // add basemap
-
+      // add basemap
       L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 18
       }).addTo(map);
 
       // CARTO client
-
       const client = new carto.Client({
         apiKey: 'default_public',
         username: 'mballesteros'
       });
           
       // Insert layer cities
-         
       const source = new carto.source.SQL(`SELECT * FROM mballesteros.parksrec WHERE city='New York'`);
       const style = new carto.style.CartoCSS(
         `#layer {
-        polygon-fill: ramp([grav1_00], (#d3f2a3, #82d091, #4c9b82, #19696f, #074050), quantiles);}
+        polygon-fill: ramp([grav1_00], (#E4F1E1, #9CCDC1, #63A6A0, #337F7F, #0D585F), quantiles);}
         #layer::outline {
         line-width: 1;
         line-color: #FFFFFF;
         line-opacity: 0.5;
           }
       `);
-      const layer = new carto.layer.Layer(source, style);
 
+      const layer = new carto.layer.Layer(source, style);
       client.addLayer(layer);
       client.getLeafletLayer().addTo(map);
 
+      // Set City when changing dropdown 1
       function setCity(cityName) { 
         source.setQuery (`SELECT * FROM mballesteros.parksrec WHERE city='${cityName}'`)
       }
 
       document.getElementById('selectDrop').addEventListener("change", function (e) {
         setCity(e.target.value)
+        fitBounds(e.target.value)
       })
 
+      // Get cities from dataset
       function getCities(){
         return fetch(
           `https://mballesteros.carto.com/api/v2/sql?q=SELECT distinct city FROM mballesteros.parksrec`
@@ -127,23 +174,49 @@
       }
       getCities();
 
+      // Set bounds when changing city
+      function fitBounds(cityName) { 
+        return fetch (`https://mballesteros.carto.com/api/v2/sql?q=SELECT ST_Extent(the_geom) as extent FROM mballesteros.parksrec WHERE city='${cityName}'`)
+          .then((resp) => resp.json())
+          .then((response) => {
+            const extent =/BOX\((.+) (.+),(.+) (.+)\)/.exec(response.rows[0].extent)
+            .splice(1, 4)
+            .map(e => parseFloat(e))
 
-                    
+            map.fitBounds([
+              [extent[1], extent[0]],
+              [extent[3],extent[2]]
+            ])
+          }
+        )
+      }
+       
+      // Set param when changing dropdown 2
       function setParam(param) {
-        
         style.setContent(`
           #layer {
             polygon-fill: ramp([${param}], (#E4F1E1, #9CCDC1, #63A6A0, #337F7F, #0D585F), quantiles);
-            }
-            #layer::outline {
+          }
+          #layer::outline {
             line-width: 1;
             line-color: #FFFFFF;
             line-opacity: 0.5;
-            } `);
+          }
+        `);
       }
-      
       document.getElementById('selectParam').addEventListener("change", function (e) {
         setParam(e.target.value)
       })
 
-</script>
+      // Define legend
+      const legend = document.querySelector('#legend');
+      legend.data = [
+        { "color": "#E4F1E1", "label": 'Poor' },
+        { "color": "#9CCDC1" },
+        { "color": "#63A6A0", "label": 'Average' },
+        { "color": "#337F7F" },
+        { "color": "#0D585F", "label": 'Good' }
+      ]
+    </script>
+  </body>
+</html>
